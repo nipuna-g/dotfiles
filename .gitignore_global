@@ -29,3 +29,6 @@ Session.vim
 
 # eslint
 .eslintcache
+
+# used with the TODO extention
+TODO

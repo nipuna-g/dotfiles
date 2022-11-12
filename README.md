@@ -1,3 +1,3 @@
 ## Nipuna - Dotfiles.
 
-A set of dot files and Ansible scripts to get things set up.
+A basic set of dotfiles for local dev and CodeSpaces
