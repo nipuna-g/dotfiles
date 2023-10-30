@@ -2,7 +2,8 @@
 	email = nipuna777@gmail.com
 	name = Nipuna Gunathilake
 [core]
-	editor = vim
+	editor = code
+	excludesFile = ~/.gitignore_global
 [alias]
   rh = reset --hard HEAD
   cob = checkout -b
@@ -13,3 +14,5 @@
   puf = push -f
   st = status -sb
   ll = log --oneline
+[push]
+	autoSetupRemote = true
