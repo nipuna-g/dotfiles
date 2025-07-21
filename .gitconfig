@@ -1,8 +1,8 @@
 [user]
-	email = nipuna777@gmail.com
+	email = nipuna@nipuna.dev
 	name = Nipuna Gunathilake
 [core]
-	editor = code
+	editor = nvim 
 	excludesFile = ~/.gitignore_global
 [alias]
   rh = reset --hard HEAD

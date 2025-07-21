@@ -15,7 +15,7 @@ Following the pattern described here: https://www.atlassian.com/git/tutorials/do
 1. Checkout repo to custom directory
 
 ```sh
-git clone --separate-git-dir=$HOME/.myconf git@github.com:nipuna777/dotfiles.git
+git clone --separate-git-dir=$HOME/.myconf git@github.com:nipuna-g/dotfiles.git
 ```
 
 2. Setup alias `config` to manage configs
