@@ -896,7 +896,8 @@ require('lazy').setup({
   require 'custom.plugins.gitsigns', -- adds gitsigns recommend keymaps
   require 'custom.plugins.typescript-tools',
   require 'custom.plugins.neotest',
-  --
+  require 'custom.plugins.flash',
+
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
   -- In normal mode type `<space>sh` then write `lazy.nvim-plugin`
