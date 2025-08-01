@@ -897,6 +897,8 @@ require('lazy').setup({
   require 'custom.plugins.typescript-tools',
   require 'custom.plugins.neotest',
   require 'custom.plugins.flash',
+  require 'custom.plugins.vim-tmux-navigator',
+  require 'custom.plugins.tailwind-tools',
 
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
