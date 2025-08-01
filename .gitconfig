@@ -1,6 +1,7 @@
 [user]
-	email = nipuna@nipuna.dev
 	name = Nipuna Gunathilake
+[include]
+  path = '~/.gitconfig.local'
 [core]
 	editor = nvim 
 	excludesFile = ~/.gitignore_global
