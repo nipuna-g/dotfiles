@@ -869,17 +869,17 @@ require('lazy').setup({
     --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
   },
 
-  require 'custom.plugins.debug',
-  require 'custom.plugins.indent_line',
-  require 'custom.plugins.lint',
-  require 'custom.plugins.autopairs',
-  require 'custom.plugins.neo-tree',
-  require 'custom.plugins.gitsigns', -- adds gitsigns recommend keymaps
-  require 'custom.plugins.typescript-tools',
-  require 'custom.plugins.neotest',
-  require 'custom.plugins.flash',
-  require 'custom.plugins.vim-tmux-navigator',
-  require 'custom.plugins.tailwind-tools',
+  require 'plugins.debug',
+  require 'plugins.indent_line',
+  require 'plugins.lint',
+  require 'plugins.autopairs',
+  require 'plugins.neo-tree',
+  require 'plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'plugins.typescript-tools',
+  require 'plugins.neotest',
+  require 'plugins.flash',
+  require 'plugins.vim-tmux-navigator',
+  require 'plugins.tailwind-tools',
 
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
