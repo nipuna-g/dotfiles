@@ -880,6 +880,7 @@ require('lazy').setup({
   require 'plugins.flash',
   require 'plugins.vim-tmux-navigator',
   require 'plugins.tailwind-tools',
+  require 'plugins.neoscroll',
 
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
