@@ -35,6 +35,14 @@
       user.name = "Nipuna G";
       user.email = "nipuna@nipuna.dev";
     };
+    aliases = {
+      st = "status";
+      co = "checkout";
+      br = "branch";
+      lg = "log --oneline --graph --decorate";
+      undo = "reset HEAD~1 --mixed";
+      staged = "diff --cached";
+    };
   };
 
   programs.ghostty = {
