@@ -8,7 +8,9 @@
   programs.home-manager.enable = true;
 
   home.packages = with pkgs; [
+    claude-code
     home-manager
+    nodejs_22
     ghostty
     brave
     deluge
@@ -22,10 +24,9 @@
 
   programs.git = {
     enable = true;
-    userName = "Nipuna Gunathilake";
-    userEmail = "nipuna@nipuna.dev";
-    extraConfig = {
-      init.defaultBranch = "main";
+    settings = {
+      user.name = "Nipuna G";
+      user.email = "nipuna@nipuna.dev";
     };
   };
 }
