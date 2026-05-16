@@ -60,6 +60,7 @@
     isNormalUser = true;
     description = "Nipuna G";
     extraGroups = [ "networkmanager" "wheel" ];
+    shell = pkgs.zsh;
   };
 
   # System-level programs
@@ -72,6 +73,7 @@
     dedicatedServer.openFirewall = true;
     localNetworkGameTransfers.openFirewall = true;
   };
+  programs.zsh.enable = true;
 
   # System packages — keep this list for things that must be
   # system-wide. User tools belong in home.nix instead.
