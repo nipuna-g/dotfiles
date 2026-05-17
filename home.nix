@@ -8,6 +8,9 @@
   programs.home-manager.enable = true;
 
   home.packages = with pkgs; [
+    nixd
+    nixfmt
+
     claude-code
     home-manager
     nodejs_22
@@ -34,14 +37,14 @@
     settings = {
       user.name = "Nipuna G";
       user.email = "nipuna@nipuna.dev";
-    };
-    aliases = {
-      st = "status";
-      co = "checkout";
-      br = "branch";
-      lg = "log --oneline --graph --decorate";
-      undo = "reset HEAD~1 --mixed";
-      staged = "diff --cached";
+      aliases = {
+        st = "status";
+        co = "checkout";
+        br = "branch";
+        lg = "log --oneline --graph --decorate";
+        undo = "reset HEAD~1 --mixed";
+        staged = "diff --cached";
+      };
     };
   };
 
@@ -77,6 +80,8 @@
       eval "$(zoxide init zsh --cmd z)"
       source ${pkgs.fzf}/share/fzf/key-bindings.zsh
       source ${pkgs.fzf}/share/fzf/completion.zsh
+      export EDITOR=nvim
+      export VISUAL=nvim
     '';
   };
 
@@ -86,14 +91,13 @@
       add_newline = true;
 
       format = lib.concatStrings [
-        "╭── "
+        "╭─ "
         "$directory"
         "$git_branch"
         "$git_status"
         "$nix_shell"
         "$line_break"
-	"╰─"
-        "$character"
+	"╰─ "
       ];
 
       directory = {
@@ -120,12 +124,24 @@
         style  = "bold cyan";
         format = "[$symbol]($style) ";
       };
-
-      character = {
-        success_symbol = "[▶](bold green)";
-        error_symbol   = "[▶](bold red)";
-
-      };
     };
+  };
+
+  programs.neovim = {
+    enable = true;
+    defaultEditor = true;
+    viAlias = true;
+    vimAlias = true;
+    withRuby = false;
+    withPython3 = false;
+      extraPackages = with pkgs; [
+      nixd
+      nixfmt
+    ];
+  };
+
+  xdg.configFile."nvim" = {
+    source = ./nvim;
+    recursive = true;
   };
 }
