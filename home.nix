@@ -144,4 +144,56 @@
     source = ./nvim;
     recursive = true;
   };
+
+  programs.plasma = {
+    enable = true;
+
+    panels = [
+      {
+        location = "top";
+        widgets = [
+          "org.kde.plasma.kickoff"
+          "org.kde.plasma.appmenu"
+          "org.kde.plasma.panelspacer"
+          {
+            systemTray = {
+              icons.spacing = "medium";
+            };
+          }
+          "org.kde.plasma.marginsseparator"
+          {
+            digitalClock = {
+              time.format = "24h";
+              date = {
+                enable = true;
+                position = "besideTime";
+                format.custom = "MM-d ddd";
+              };
+              font = {
+                bold = true;
+                size = 8;
+                family = "JetBrainsMono Nerd Font";
+              };
+            };
+          }
+          "org.kde.plasma.lock_logout"
+        ];
+      }
+      {
+        location = "left";
+        widgets = [
+          {
+            iconTasks = {
+              launchers = [
+                "applications:systemsettings.desktop"
+                "preferred://filemanager"
+                "preferred://browser"
+                "applications:com.mitchellh.ghostty.desktop"
+              ];
+            };
+          }
+        ];
+      }
+    ];
+  };
 }
