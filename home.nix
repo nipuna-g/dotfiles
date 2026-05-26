@@ -21,6 +21,9 @@
     which
     vscode
     nerd-fonts.jetbrains-mono
+    noto-fonts
+    noto-fonts-cjk-sans
+    noto-fonts-color-emoji
 
     eza
     bat
