@@ -3,6 +3,7 @@
 {
   imports = [
     ./hardware-configuration.nix
+    ./modules/expressvpn_qt.nix
   ];
 
   # Bootloader
@@ -18,6 +19,7 @@
   # Networking
   networking.hostName = "nixos";
   networking.networkmanager.enable = true;
+  services.resolved.enable = true;
   networking.firewall = {
     enable = true;
     # KDE Connect
@@ -92,9 +94,12 @@
   # Allow unfree packages (VS Code, Steam, etc.)
   nixpkgs.config.allowUnfree = true;
 
+  # ExpressVPN
+  services.expressvpn_qt.enable = true;
+
   # Nix settings
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
+    
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "25.11";
 }
