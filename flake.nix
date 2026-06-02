@@ -16,9 +16,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
+
+    zen-browser = {
+      url = "github:youwen5/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, claude-code, plasma-manager, ... }: {
+  outputs = { self, nixpkgs, home-manager, claude-code, plasma-manager, zen-browser, ... }: {
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
@@ -30,6 +35,7 @@
           home-manager.useUserPackages = true;
           home-manager.sharedModules = [ plasma-manager.homeModules.plasma-manager ];
           home-manager.users.nipuna = import ./home.nix;
+          home-manager.extraSpecialArgs = { inherit zen-browser; };
         }
       ];
     };
