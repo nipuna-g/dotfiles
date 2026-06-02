@@ -1,4 +1,32 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, zen-browser, ... }:
+
+let
+  zen = pkgs.wrapFirefox
+    zen-browser.packages.x86_64-linux.zen-browser-unwrapped
+    {
+      extraPrefs = ''
+        lockPref("extensions.autoDisableScopes", 0);
+      '';
+      extraPolicies.ExtensionSettings = {
+        "uBlock0@raymondhill.net" = {
+          install_url = "https://addons.mozilla.org/en-US/firefox/downloads/latest/ublock-origin/latest.xpi";
+          installation_mode = "normal_installed";
+        };
+        "{446900e4-71c2-419f-a6a7-df9c091e268b}" = {
+          install_url = "https://addons.mozilla.org/en-US/firefox/downloads/latest/bitwarden-password-manager/latest.xpi";
+          installation_mode = "normal_installed";
+        };
+        "{762f9885-5a13-4abd-9c77-433dcd38b8fd}" = {
+          install_url = "https://addons.mozilla.org/en-US/firefox/downloads/latest/return-youtube-dislikes/latest.xpi";
+          installation_mode = "normal_installed";
+        };
+        "sponsorBlocker@ajay.app" = {
+          install_url = "https://addons.mozilla.org/en-US/firefox/downloads/latest/sponsorblock/latest.xpi";
+          installation_mode = "normal_installed";
+        };
+      };
+    };
+in
 
 {
   home.username = "nipuna";
@@ -15,11 +43,13 @@
     home-manager
     nodejs_22
     brave
+    zen
     deluge
     vlc
     gnutar
     which
     vscode
+    obsidian 
     nerd-fonts.jetbrains-mono
     noto-fonts
     noto-fonts-cjk-sans
@@ -100,7 +130,7 @@
         "$git_status"
         "$nix_shell"
         "$line_break"
-	"╰─ "
+	      "╰─ "
       ];
 
       directory = {
@@ -137,9 +167,33 @@
     vimAlias = true;
     withRuby = false;
     withPython3 = false;
-      extraPackages = with pkgs; [
+    extraPackages = with pkgs; [
       nixd
       nixfmt
+      lua-language-server
+      typescript-language-server
+      pyright
+      rust-analyzer
+      fd
+    ];
+    plugins = with pkgs.vimPlugins; [
+      tokyonight-nvim
+      nvim-cmp
+      cmp-nvim-lsp
+      cmp-buffer
+      cmp-path
+      plenary-nvim
+      telescope-nvim
+      telescope-fzf-native-nvim
+      (nvim-treesitter.withPlugins (p: with p; [
+        nix lua typescript javascript tsx python rust
+        json yaml toml markdown html css bash
+      ]))
+      nvim-web-devicons
+      nui-nvim
+      neo-tree-nvim
+      gitsigns-nvim
+      lualine-nvim
     ];
   };
 
@@ -154,6 +208,7 @@
     panels = [
       {
         location = "top";
+        height = 32;
         widgets = [
           "org.kde.plasma.kickoff"
           "org.kde.plasma.appmenu"
@@ -184,6 +239,7 @@
       }
       {
         location = "left";
+        hiding = "autohide";
         widgets = [
           {
             iconTasks = {
