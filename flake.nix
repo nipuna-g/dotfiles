@@ -39,5 +39,18 @@
         }
       ];
     };
+
+    homeConfigurations."nipuna" = home-manager.lib.homeManagerConfiguration {
+      pkgs = import nixpkgs {
+        system = "aarch64-darwin";
+        config.allowUnfree = true;
+        overlays = [ claude-code.overlays.default ];
+      };
+      extraSpecialArgs = { inherit zen-browser; };
+      modules = [
+        plasma-manager.homeModules.plasma-manager
+        ./home.nix
+      ];
+    };
   };
 }

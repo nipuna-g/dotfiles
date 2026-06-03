@@ -2,7 +2,7 @@
 
 let
   zen = pkgs.wrapFirefox
-    zen-browser.packages.x86_64-linux.zen-browser-unwrapped
+    zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.zen-browser-unwrapped
     {
       extraPrefs = ''
         lockPref("extensions.autoDisableScopes", 0);
@@ -30,20 +30,16 @@ in
 
 {
   home.username = "nipuna";
-  home.homeDirectory = "/home/nipuna";
+  home.homeDirectory = if pkgs.stdenv.isDarwin then "/Users/nipuna" else "/home/nipuna";
   home.stateVersion = "25.11";
 
   programs.home-manager.enable = true;
 
   home.packages = with pkgs; [
-    nixd
-    nixfmt
-
     claude-code
     home-manager
     nodejs_22
     brave
-    zen
     deluge
     vlc
     gnutar
@@ -63,6 +59,7 @@ in
     zoxide
   ] ++ lib.optionals stdenv.isLinux [
     kdePackages.kate
+    zen
   ];
 
   programs.git = {
@@ -202,7 +199,7 @@ in
     recursive = true;
   };
 
-  programs.plasma = {
+  programs.plasma = lib.mkIf pkgs.stdenv.isLinux {
     enable = true;
 
     panels = [
@@ -248,6 +245,7 @@ in
                 "preferred://filemanager"
                 "preferred://browser"
                 "applications:com.mitchellh.ghostty.desktop"
+                "applications:steam.desktop"
               ];
             };
           }
