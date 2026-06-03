@@ -71,7 +71,6 @@
   };
 
   # System-level programs
-  programs.firefox.enable = true;
   programs.kdeconnect.enable = true;
   programs.nix-ld.enable = true;
   programs.steam = {
@@ -85,10 +84,9 @@
   # System packages — keep this list for things that must be
   # system-wide. User tools belong in home.nix instead.
   environment.systemPackages = with pkgs; [
-    neovim
     wget
     curl
-    git  # added — needed by Nix flakes itself
+    git
   ];
 
   # Allow unfree packages (VS Code, Steam, etc.)
@@ -99,6 +97,11 @@
 
   # Nix settings
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 14d";
+  };
     
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "25.11";
