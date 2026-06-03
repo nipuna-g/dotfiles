@@ -34,8 +34,12 @@
       top = "btop";
       grep = "rg";
 
-      rebuild = "sudo nixos-rebuild switch";
-      update  = "cd ~/dotfiles && nix flake update && sudo nixos-rebuild switch";
+      rebuild = if pkgs.stdenv.isDarwin
+        then "home-manager switch --flake ~/dotfiles#nipuna"
+        else "sudo nixos-rebuild switch";
+      update = if pkgs.stdenv.isDarwin
+        then "cd ~/dotfiles && nix flake update && home-manager switch --flake ~/dotfiles#nipuna"
+        else "cd ~/dotfiles && nix flake update && sudo nixos-rebuild switch";
     };
     initContent = ''
       eval "$(zoxide init zsh --cmd z)"

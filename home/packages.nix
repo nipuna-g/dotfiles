@@ -4,8 +4,8 @@
   home.packages = with pkgs; [
     claude-code
     home-manager
-    nodejs_22
-    brave
+    nodejs
+    chromium
     deluge
     vlc
     gnutar
