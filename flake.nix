@@ -9,6 +9,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nix-darwin = {
+      url = "github:LnL7/nix-darwin/nix-darwin-26.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     claude-code.url = "github:sadjow/claude-code-nix";
 
     plasma-manager = {
@@ -23,33 +28,32 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, claude-code, plasma-manager, zen-browser, ... }: {
+  outputs = { self, nixpkgs, home-manager, nix-darwin, claude-code, plasma-manager, zen-browser, ... }:
+  let
+    hmSharedConfig = {
+      nixpkgs.overlays = [ claude-code.overlays.default ];
+      home-manager.useGlobalPkgs = true;
+      home-manager.useUserPackages = true;
+      home-manager.sharedModules = [ plasma-manager.homeModules.plasma-manager ];
+      home-manager.users.nipuna = import ./home.nix;
+      home-manager.extraSpecialArgs = { inherit zen-browser; };
+    };
+  in {
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
         ./configuration.nix
         home-manager.nixosModules.home-manager
-        {
-          nixpkgs.overlays = [ claude-code.overlays.default ];
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.sharedModules = [ plasma-manager.homeModules.plasma-manager ];
-          home-manager.users.nipuna = import ./home.nix;
-          home-manager.extraSpecialArgs = { inherit zen-browser; };
-        }
+        hmSharedConfig
       ];
     };
 
-    homeConfigurations."nipuna" = home-manager.lib.homeManagerConfiguration {
-      pkgs = import nixpkgs {
-        system = "aarch64-darwin";
-        config.allowUnfree = true;
-        overlays = [ claude-code.overlays.default ];
-      };
-      extraSpecialArgs = { inherit zen-browser; };
+    darwinConfigurations.mac = nix-darwin.lib.darwinSystem {
+      system = "aarch64-darwin";
       modules = [
-        plasma-manager.homeModules.plasma-manager
-        ./home.nix
+        ./darwin-configuration.nix
+        home-manager.darwinModules.home-manager
+        hmSharedConfig
       ];
     };
   };
