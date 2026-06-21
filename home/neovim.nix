@@ -35,6 +35,8 @@
       neo-tree-nvim
       gitsigns-nvim
       lualine-nvim
+      snacks-nvim
+      claudecode-nvim
     ];
   };
 
