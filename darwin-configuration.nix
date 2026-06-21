@@ -21,4 +21,19 @@
     curl
     git
   ];
+
+  # Kanata: caps lock as Esc (tap) / Ctrl (hold).
+  # Requires the Karabiner DriverKit VirtualHIDDevice to be installed once:
+  # https://github.com/pqrs-org/Karabiner-DriverKit-VirtualHIDDevice/releases
+  launchd.daemons.kanata.serviceConfig = {
+    ProgramArguments = [
+      "${pkgs.kanata}/bin/kanata"
+      "-c"
+      "${./home/kanata.kbd}"
+    ];
+    KeepAlive = true;
+    RunAtLoad = true;
+    StandardOutPath = "/var/log/kanata.log";
+    StandardErrorPath = "/var/log/kanata.err.log";
+  };
 }

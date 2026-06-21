@@ -23,6 +23,7 @@
     ripgrep
     fzf
     zoxide
+    kanata
   ] ++ lib.optionals stdenv.isLinux [
     kdePackages.kate
   ];

@@ -95,6 +95,14 @@
   # ExpressVPN
   services.expressvpn_qt.enable = true;
 
+  # Kanata: caps lock as Esc (tap) / Ctrl (hold).
+  hardware.uinput.enable = true;
+  services.kanata = {
+    enable = true;
+    keyboards.default.configFile = ./home/kanata.kbd;
+  };
+  systemd.services.kanata-default.serviceConfig.SupplementaryGroups = [ "uinput" "input" ];
+
   # Nix settings
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nix.settings.auto-optimise-store = true;
