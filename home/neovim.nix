@@ -18,6 +18,7 @@
       fd
     ];
     plugins = with pkgs.vimPlugins; [
+      nvim-lspconfig
       tokyonight-nvim
       nvim-cmp
       cmp-nvim-lsp

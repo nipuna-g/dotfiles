@@ -51,6 +51,48 @@ cmp.setup({
 vim.lsp.config("*", {
   capabilities = require("cmp_nvim_lsp").default_capabilities(),
 })
+
+-- nixd: resolve NixOS/Home-Manager options against whichever flake the current
+-- file lives in, so dotfiles, homelab, and any future flake each get their own
+-- context instead of everything pointing at dotfiles. This must run in on_init
+-- (not before_init): reassigning config.settings in before_init creates a new
+-- table the already-created client never sees, so nixd got empty settings and
+-- offered no option completion. on_init lets us mutate the live client.settings
+-- and push it, so nixd actually receives the option exprs.
+vim.lsp.config("nixd", {
+  on_init = function(client)
+    local root = client.root_dir
+
+    -- Fallback for a .nix file that isn't inside any flake.
+    local nixd = { nixpkgs = { expr = "import <nixpkgs> { }" } }
+
+    if root and vim.uv.fs_stat(root .. "/flake.nix") then
+      local flake = string.format('builtins.getFlake "%s"', root)
+      -- Pick the flake's first nixosConfiguration generically; fall back to an
+      -- empty option set when it defines none (e.g. a packages-only flake).
+      local sys = string.format(
+        "(let cfgs = builtins.attrValues ((%s).nixosConfigurations or {}); "
+          .. "in if cfgs == [] then { options = {}; } else builtins.head cfgs)",
+        flake
+      )
+      nixd.nixpkgs = { expr = string.format("import (%s).inputs.nixpkgs { }", flake) }
+      nixd.options = {
+        nixos = { expr = sys .. ".options" },
+        -- home-manager options only exist when the flake wires HM into the
+        -- NixOS config (dotfiles does; the homelab flake doesn't). Guard it so a
+        -- missing `home-manager` attr can't crash nixd's attrset-eval worker.
+        home_manager = {
+          expr = "(let s = " .. sys .. "; in if s.options ? home-manager "
+            .. "then s.options.home-manager.users.type.getSubOptions [] else {})",
+        },
+      }
+    end
+
+    client.settings = vim.tbl_deep_extend("force", client.settings or {}, { nixd = nixd })
+    client:notify("workspace/didChangeConfiguration", { settings = client.settings })
+  end,
+})
+
 vim.lsp.enable({ "nixd", "lua_ls", "ts_ls", "pyright", "rust_analyzer" })
 
 vim.api.nvim_create_autocmd("LspAttach", {
