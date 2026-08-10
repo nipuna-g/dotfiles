@@ -125,6 +125,9 @@
   hardware.uinput.enable = true;
   services.kanata = {
     enable = true;
+    # Device restriction lives in the .kbd (linux-dev) so the single config
+    # stays shared with the macOS host. A raw configFile overrides the module's
+    # `devices` option, so setting it here would be silently ignored.
     keyboards.default.configFile = ./home/kanata.kbd;
   };
   systemd.services.kanata-default.serviceConfig.SupplementaryGroups = [ "uinput" "input" ];

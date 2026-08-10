@@ -3,6 +3,13 @@
 
 (defcfg
   process-unmapped-keys yes
+  ;; Only intercept the Keychron. Otherwise kanata grabs every EV_KEY device,
+  ;; including the Elecom trackball, and re-emits the ball through its virtual
+  ;; device -- which hides it from KWin's per-device mouse settings (scroll).
+  ;; linux-dev is Linux-only; kanata ignores it on the macOS host.
+  linux-dev (/dev/input/by-id/usb-Keychron_K4_Keychron_K4-event-kbd)
+  ;; Don't fail to start if the keyboard is momentarily absent.
+  linux-continue-if-no-devs-found yes
 )
 
 (defsrc

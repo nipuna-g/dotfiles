@@ -34,6 +34,18 @@ in
   programs.plasma = lib.mkIf pkgs.stdenv.isLinux {
     enable = true;
 
+    # Elecom Huge trackball: hold BTN_TASK (evdev button 279) and roll the ball
+    # to scroll. KWin stores per-device input settings in kcminputrc under a
+    # [Libinput][vendor][product][name] group; vendor 1390 / product 284 are the
+    # Getech "HUGE TrackBall". ScrollMethod is a libinput bitmask where 4 =
+    # scroll-on-button-down; ScrollButton is the held button's evdev code.
+    # plasma-manager splits the group name on "/" into KConfig's nested
+    # [Libinput][1390][284][Getech HUGE TrackBall] group header.
+    configFile.kcminputrc."Libinput/1390/284/Getech HUGE TrackBall" = {
+      ScrollMethod = 4;
+      ScrollButton = 279;
+    };
+
     panels = [
       {
         location = "top";
