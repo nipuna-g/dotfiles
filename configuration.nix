@@ -140,7 +140,27 @@
     dates = "weekly";
     options = "--delete-older-than 14d";
   };
-    
+
+  # Auto-upgrade: pull the latest pushed commit of this flake and rebuild.
+  # The lock itself is bumped in the repo by the update-flake-lock GitHub
+  # Action, so this only ever deploys a pinned, recorded flake.lock. Runs
+  # against the remote flake to avoid touching the local git tree.
+  system.autoUpgrade = {
+    enable = true;
+    flake = "github:nipuna-g/dotfiles";
+    # Honour the lockfile: don't pass --upgrade (that's a channel concept and
+    # is meaningless for a flake pinned by flake.lock).
+    upgrade = false;
+    dates = "Sun 04:00";
+    randomizedDelaySec = "45min";
+    # Store the last-run time on disk so a missed run (machine off at 04:00)
+    # fires on the next boot instead of being skipped for the week.
+    persistent = true;
+    # Never auto-reboot a desktop; kernel updates apply on the next manual reboot.
+    allowReboot = false;
+  };
+
+
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "25.11";
 }

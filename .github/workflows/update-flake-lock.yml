@@ -1,0 +1,35 @@
+name: update-flake-lock
+
+# Bump flake.lock on a schedule and commit straight to the default branch.
+# The NixOS host's system.autoUpgrade then pulls this commit and rebuilds,
+# so it only ever deploys a lock that is recorded here in git.
+on:
+  schedule:
+    # Saturday 12:00 UTC (20:00 Asia/Singapore) — lands the new lock before
+    # the host's Sunday 04:00 autoUpgrade run picks it up.
+    - cron: "0 12 * * 6"
+  workflow_dispatch: {} # allow manual runs from the Actions tab
+
+jobs:
+  update-lock:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # needed to push the commit to main
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: DeterminateSystems/nix-installer-action@main
+
+      - name: Update flake inputs
+        run: nix flake update
+
+      - name: Commit and push if the lock changed
+        run: |
+          if git diff --quiet -- flake.lock; then
+            echo "flake.lock unchanged; nothing to do."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -am "chore: nix flake update"
+          git push
