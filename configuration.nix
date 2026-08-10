@@ -94,6 +94,33 @@
   # ExpressVPN
   services.expressvpn-qt.enable = true;
 
+  # Ollama: local LLM runtime.
+  # ollama-vulkan drives the AMD GPU (RX 9060 XT, 16 GB) via the Mesa/RADV
+  # Vulkan driver. Preferred over ollama-rocm here because RDNA4 ROCm support
+  # is new and finicky; Vulkan works on the stock graphics stack with no
+  # gfx-version overrides.
+  services.ollama = {
+    enable = true;
+    package = pkgs.ollama-vulkan;
+    loadModels = [
+      "gpt-oss:20b"      # fast MoE general/coding daily driver (~12 GB)
+      "qwen3:30b-a3b"    # stronger MoE, ~3B active so partial offload stays fast
+    ];
+  };
+
+  # Open WebUI: ChatGPT-style frontend for the Ollama service above.
+  # Port 11435 (next to Ollama's 11434) keeps it clear of web-dev defaults
+  # like 3000/5173/8080. Visit http://localhost:11435.
+  services.open-webui = {
+    enable = true;
+    port = 11435;
+    environment = {
+      OLLAMA_BASE_URL = "http://127.0.0.1:11434";
+      WEBUI_AUTH = "False";          # skip login on a local single-user box
+      ANONYMIZED_TELEMETRY = "False";
+    };
+  };
+
   # Kanata: caps lock as Esc (tap) / Ctrl (hold).
   hardware.uinput.enable = true;
   services.kanata = {
