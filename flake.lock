@@ -19,6 +19,26 @@
         "type": "github"
       }
     },
+    "expressvpn-qt": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1786381976,
+        "narHash": "sha256-oXihHCFfVRm+GJR/6LyY6poL9JI+Bvec/TahGCm0Ky0=",
+        "owner": "nipuna-g",
+        "repo": "expressvpn-nix",
+        "rev": "519b660baff8aec9401d25e4c8c27fb763a10b8a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nipuna-g",
+        "repo": "expressvpn-nix",
+        "type": "github"
+      }
+    },
     "flake-utils": {
       "inputs": {
         "systems": "systems"
@@ -137,6 +157,7 @@
     "root": {
       "inputs": {
         "claude-code": "claude-code",
+        "expressvpn-qt": "expressvpn-qt",
         "home-manager": "home-manager",
         "nix-darwin": "nix-darwin",
         "nixpkgs": "nixpkgs_2",

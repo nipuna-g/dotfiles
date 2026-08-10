@@ -26,9 +26,14 @@
       url = "github:youwen5/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    expressvpn-qt = {
+      url = "github:nipuna-g/expressvpn-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, nix-darwin, claude-code, plasma-manager, zen-browser, ... }:
+  outputs = { self, nixpkgs, home-manager, nix-darwin, claude-code, plasma-manager, zen-browser, expressvpn-qt, ... }:
   let
     hmSharedConfig = {
       nixpkgs.overlays = [ claude-code.overlays.default ];
@@ -43,6 +48,7 @@
       system = "x86_64-linux";
       modules = [
         ./configuration.nix
+        expressvpn-qt.nixosModules.default
         home-manager.nixosModules.home-manager
         hmSharedConfig
       ];

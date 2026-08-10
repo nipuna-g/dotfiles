@@ -3,7 +3,6 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ./modules/expressvpn_qt.nix
   ];
 
   # Bootloader
@@ -93,7 +92,7 @@
   nixpkgs.config.allowUnfree = true;
 
   # ExpressVPN
-  services.expressvpn_qt.enable = true;
+  services.expressvpn-qt.enable = true;
 
   # Kanata: caps lock as Esc (tap) / Ctrl (hold).
   hardware.uinput.enable = true;
