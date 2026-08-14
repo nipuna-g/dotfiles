@@ -3,6 +3,7 @@
 {
   home.packages = with pkgs; [
     claude-code
+    pi-coding-agent
     home-manager
     nodejs
     chromium
