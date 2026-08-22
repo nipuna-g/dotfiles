@@ -5,6 +5,10 @@ let
   switchCommand = if isDarwin then "darwin-rebuild" else "nixos-rebuild";
   # path: rather than the default git ref, which cannot see local/.
   flakeRef = if isDarwin then "path:$HOME/dotfiles" else "~/dotfiles";
+  # Reads the system clipboard; zsh vi-mode p/P go through this.
+  pasteCmd =
+    if isDarwin then "pbpaste"
+    else "${pkgs.wl-clipboard}/bin/wl-paste --no-newline";
 in
 {
   programs.git = {
@@ -76,8 +80,21 @@ in
       bindkey '^[[B' down-line-or-beginning-search
       [[ -n "$terminfo[kcuu1]" ]] && bindkey "$terminfo[kcuu1]" up-line-or-beginning-search
       [[ -n "$terminfo[kcud1]" ]] && bindkey "$terminfo[kcud1]" down-line-or-beginning-search
+
+      # zsh keeps vi-mode yanks in its own $CUTBUFFER, which has nothing to do
+      # with the system clipboard -- so plain `p` never pastes what you copied
+      # from another app. Fill CUTBUFFER from the real clipboard first, then let
+      # the native widget run, so counts and P still behave.
+      # Trade-off: p no longer replays text deleted with d/x inside zsh.
+      _clip-put-after()  { CUTBUFFER="$(${pasteCmd})"; zle vi-put-after; }
+      _clip-put-before() { CUTBUFFER="$(${pasteCmd})"; zle vi-put-before; }
+      zle -N _clip-put-after
+      zle -N _clip-put-before
+      bindkey -M vicmd "p" _clip-put-after
+      bindkey -M vicmd "P" _clip-put-before
     '';
   };
+
 
   programs.starship = {
     enable = true;
