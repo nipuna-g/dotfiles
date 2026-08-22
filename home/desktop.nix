@@ -29,6 +29,7 @@ let
 in
 
 {
+  # macOS gets Zen from the homebrew cask instead; the flake is Linux-only.
   home.packages = lib.optionals pkgs.stdenv.isLinux [ zen ];
 
   programs.plasma = lib.mkIf pkgs.stdenv.isLinux {
