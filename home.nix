@@ -1,8 +1,8 @@
-{ pkgs, ... }:
+{ lib, host, ... }:
 
 {
-  home.username = "nipuna";
-  home.homeDirectory = if pkgs.stdenv.isDarwin then "/Users/nipuna" else "/home/nipuna";
+  home.username = host.username;
+  home.homeDirectory = host.homeDirectory;
   home.stateVersion = "25.11";
 
   programs.home-manager.enable = true;
@@ -12,6 +12,10 @@
     ./home/shell.nix
     ./home/terminal.nix
     ./home/neovim.nix
+    ./home/ssh.nix
+    ./home/gh.nix
     ./home/desktop.nix
-  ];
+  ]
+  # Untracked and so invisible to the default git ref; needs a path: flake ref.
+  ++ lib.optional (builtins.pathExists ./local/home.nix) ./local/home.nix;
 }

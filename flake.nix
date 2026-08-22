@@ -10,7 +10,7 @@
     };
 
     nix-darwin = {
-      url = "github:LnL7/nix-darwin/nix-darwin-26.05";
+      url = "github:LnL7/nix-darwin/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -35,31 +35,36 @@
 
   outputs = { self, nixpkgs, home-manager, nix-darwin, claude-code, plasma-manager, zen-browser, expressvpn-qt, ... }:
   let
-    hmSharedConfig = {
+    hosts = import ./hosts.nix;
+
+    # A function of host: the two hosts use different usernames.
+    hmSharedConfig = host: {
       nixpkgs.overlays = [ claude-code.overlays.default ];
       home-manager.useGlobalPkgs = true;
       home-manager.useUserPackages = true;
       home-manager.sharedModules = [ plasma-manager.homeModules.plasma-manager ];
-      home-manager.users.nipuna = import ./home.nix;
-      home-manager.extraSpecialArgs = { inherit zen-browser; };
+      home-manager.users.${host.username} = import ./home.nix;
+      home-manager.extraSpecialArgs = { inherit zen-browser host; };
     };
   in {
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
+      inherit (hosts.nixos) system;
+      specialArgs = { host = hosts.nixos; };
       modules = [
         ./configuration.nix
         expressvpn-qt.nixosModules.default
         home-manager.nixosModules.home-manager
-        hmSharedConfig
+        (hmSharedConfig hosts.nixos)
       ];
     };
 
     darwinConfigurations.mac = nix-darwin.lib.darwinSystem {
-      system = "aarch64-darwin";
+      inherit (hosts.mac) system;
+      specialArgs = { host = hosts.mac; };
       modules = [
         ./darwin-configuration.nix
         home-manager.darwinModules.home-manager
-        hmSharedConfig
+        (hmSharedConfig hosts.mac)
       ];
     };
   };

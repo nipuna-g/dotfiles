@@ -1,19 +1,21 @@
-{ pkgs, ... }:
+{ pkgs, lib, host, ... }:
 
 {
-  system.primaryUser = "nipuna";
+  nix.enable = false;
+
+  system.primaryUser = host.username;
   system.stateVersion = 5;
 
-  nixpkgs.hostPlatform = "aarch64-darwin";
+  nixpkgs.hostPlatform = host.system;
   nixpkgs.config.allowUnfree = true;
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   programs.zsh.enable = true;
 
-  users.users.nipuna = {
-    name = "nipuna";
-    home = "/Users/nipuna";
+  users.users.${host.username} = {
+    name = host.username;
+    home = host.homeDirectory;
   };
 
   environment.systemPackages = with pkgs; [
@@ -21,6 +23,27 @@
     curl
     git
   ];
+
+  # nix-darwin generates its own /etc/zprofile, and that one never calls
+  # /usr/libexec/path_helper -- so /etc/paths.d/homebrew is dead config here and
+  # nothing brew installs is on PATH. Append the prefix ourselves; mkAfter keeps
+  # it behind the nix profiles so nixpkgs always wins a name collision.
+  environment.systemPath = lib.mkAfter [ "/opt/homebrew/bin" "/opt/homebrew/sbin" ];
+
+  homebrew = {
+    enable = true;
+    
+    onActivation.cleanup = "uninstall";
+
+    casks = [
+      "chromium"
+      "vscodium"
+      # Not in nixpkgs for darwin; home/terminal.nix manages its config.
+      "ghostty"
+      # The zen-browser flake builds for Linux only; see home/desktop.nix.
+      "zen"
+    ];
+  };
 
   # Kanata: caps lock as Esc (tap) / Ctrl (hold).
   # Requires the Karabiner DriverKit VirtualHIDDevice to be installed once:

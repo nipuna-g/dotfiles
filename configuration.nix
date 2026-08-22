@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, host, ... }:
 
 {
   imports = [
@@ -16,7 +16,7 @@
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # Networking
-  networking.hostName = "nixos";
+  networking.hostName = host.hostname;
   networking.networkmanager.enable = true;
   services.resolved.enable = true;
   networking.firewall = {
@@ -62,7 +62,7 @@
   services.printing.drivers = [ pkgs.hplipWithPlugin ];
 
   # User
-  users.users.nipuna = {
+  users.users.${host.username} = {
     isNormalUser = true;
     description = "Nipuna G";
     extraGroups = [ "networkmanager" "wheel" ];
