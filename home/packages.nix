@@ -6,13 +6,8 @@
     pi-coding-agent
     home-manager
     nodejs
-    chromium
-    deluge
-    vlc
     gnutar
     which
-    vscode
-    obsidian
     nerd-fonts.jetbrains-mono
     noto-fonts
     noto-fonts-cjk-sans
@@ -27,5 +22,10 @@
     kanata
   ] ++ lib.optionals stdenv.isLinux [
     kdePackages.kate
+    chromium
+    deluge
+    vlc
+    vscodium
+    obsidian
   ];
 }
