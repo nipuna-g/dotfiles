@@ -1,12 +1,17 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, host, ... }:
 
+let
+  isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
+  switchCommand = if isDarwin then "darwin-rebuild" else "nixos-rebuild";
+  # path: rather than the default git ref, which cannot see local/.
+  flakeRef = if isDarwin then "path:$HOME/dotfiles" else "~/dotfiles";
+in
 {
   programs.git = {
     enable = true;
+
     settings = {
-      user.name = "Nipuna G";
-      user.email = "nipuna@nipuna.dev";
-      aliases = {
+      alias = {
         st     = "status";
         co     = "checkout";
         br     = "branch";
@@ -15,6 +20,23 @@
         staged = "diff --cached";
       };
     };
+
+    includes = [
+      # Default identity, untracked; see README "Machine-local state".
+      { path = "~/dotfiles/local/gitconfig"; }
+
+      # After the include so it wins here.
+      {
+        condition = "gitdir:~/dotfiles/";
+        contents = {
+          user.name = "Nipuna G";
+          user.email = "nipuna@nipuna.dev";
+          user.signingKey = "";
+          commit.gpgSign = false;
+          tag.gpgSign = false;
+        };
+      }
+    ];
   };
 
   programs.zsh = {
@@ -33,13 +55,11 @@
       cat = "bat";
       top = "btop";
       grep = "rg";
+      code = "codium";
 
-      rebuild = if pkgs.stdenv.isDarwin
-        then "home-manager switch --flake ~/dotfiles#nipuna"
-        else "sudo nixos-rebuild switch";
-      update = if pkgs.stdenv.isDarwin
-        then "cd ~/dotfiles && nix flake update && home-manager switch --flake ~/dotfiles#nipuna"
-        else "cd ~/dotfiles && nix flake update && sudo nixos-rebuild switch";
+      # home-manager is a host module, so there is no homeConfigurations output.
+      rebuild = "sudo ${switchCommand} switch --flake ${flakeRef}#${host.hostname}";
+      update = "cd ~/dotfiles && nix flake update && sudo ${switchCommand} switch --flake ${flakeRef}#${host.hostname}";
     };
     initContent = ''
       eval "$(zoxide init zsh --cmd z)"
