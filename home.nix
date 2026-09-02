@@ -16,6 +16,7 @@
     ./home/gh.nix
     ./home/desktop.nix
     ./home/karabiner.nix
+    ./home/pi.nix
   ]
   # Untracked and so invisible to the default git ref; needs a path: flake ref.
   ++ lib.optional (builtins.pathExists ./local/home.nix) ./local/home.nix;
