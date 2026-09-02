@@ -15,9 +15,12 @@ in
     enable = true;
 
     settings = {
+      push.autoSetupRemote = true;
+
       alias = {
         st     = "status";
         co     = "checkout";
+        cob    = "checkout -b";
         br     = "branch";
         lg     = "log --oneline --graph --decorate";
         undo   = "reset HEAD~1 --mixed";
