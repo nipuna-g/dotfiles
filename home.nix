@@ -16,6 +16,7 @@
     ./home/gh.nix
     ./home/desktop.nix
     ./home/karabiner.nix
+    ./home/aerospace.nix
     ./home/pi.nix
     ./home/vscode.nix
   ]

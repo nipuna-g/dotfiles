@@ -35,7 +35,11 @@
     
     onActivation.cleanup = "uninstall";
 
+    taps = [ "nikitabobko/tap" ];
+
     casks = [
+      # Configured in home/aerospace.nix.
+      "nikitabobko/tap/aerospace"
       "chromium"
       "visual-studio-code"
       "zed"
