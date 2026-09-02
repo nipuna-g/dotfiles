@@ -37,7 +37,9 @@
 
     casks = [
       "chromium"
-      "vscodium"
+      "visual-studio-code"
+      "zed"
+      "raycast"
       # Not in nixpkgs for darwin; home/terminal.nix manages its config.
       "ghostty"
       # The zen-browser flake builds for Linux only; see home/desktop.nix.

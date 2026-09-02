@@ -27,7 +27,7 @@
     chromium
     deluge
     vlc
-    vscodium
+    vscode
     obsidian
   ];
 }

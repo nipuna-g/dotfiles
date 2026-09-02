@@ -62,7 +62,6 @@ in
       cat = "bat";
       top = "btop";
       grep = "rg";
-      code = "codium";
 
       # home-manager is a host module, so there is no homeConfigurations output.
       rebuild = "sudo ${switchCommand} switch --flake ${flakeRef}#${host.hostname}";
