@@ -82,6 +82,9 @@ copy to a new machine:
     local/home.nix        home-manager module for host-specific agents and tools
     local/gitconfig       default git identity, pulled in by git `include`
     local/ssh_config      ssh host blocks, pulled in by ssh `Include`
+    local/work-shell/     devShell flake with work CLI tools, entered by a
+                          direnv `.envrc` above the work checkouts:
+                          use flake path:$HOME/dotfiles/local/work-shell
 
 The nix files are imported only if present, and git and ssh both ignore a
 missing include, so a host without `local/` needs no special case — except that

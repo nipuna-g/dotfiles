@@ -11,6 +11,12 @@ let
     else "${pkgs.wl-clipboard}/bin/wl-paste --no-newline";
 in
 {
+  programs.direnv = {
+    enable = true;
+    # Caches evaluated shells; without it every cd re-runs nix.
+    nix-direnv.enable = true;
+  };
+
   programs.git = {
     enable = true;
 
