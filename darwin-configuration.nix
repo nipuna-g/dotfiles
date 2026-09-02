@@ -43,6 +43,9 @@
       # The zen-browser flake builds for Linux only; see home/desktop.nix.
       "zen"
     ];
+
+    # Any App Store app not listed here gets uninstalled.
+    masApps.Amphetamine = 937984704;
   };
 
   # Kanata: caps lock as Esc (tap) / Ctrl (hold).
@@ -59,4 +62,7 @@
     StandardOutPath = "/var/log/kanata.log";
     StandardErrorPath = "/var/log/kanata.err.log";
   };
+
+  # Sleep (unlike screen lock) kills running processes; keep it long.
+  power.sleep.computer = 60;
 }
