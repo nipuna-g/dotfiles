@@ -19,7 +19,6 @@
     ripgrep
     fzf
     zoxide
-    kanata
   ] ++ lib.optionals stdenv.isLinux [
     # Wayland clipboard CLI; zsh binds vi-mode p/P through it (see shell.nix).
     wl-clipboard

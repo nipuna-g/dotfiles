@@ -40,6 +40,8 @@
       "visual-studio-code"
       "zed"
       "raycast"
+      # Configured in home/karabiner.nix.
+      "karabiner-elements"
       # Not in nixpkgs for darwin; home/terminal.nix manages its config.
       "ghostty"
       # The zen-browser flake builds for Linux only; see home/desktop.nix.
@@ -48,21 +50,6 @@
 
     # Any App Store app not listed here gets uninstalled.
     masApps.Amphetamine = 937984704;
-  };
-
-  # Kanata: caps lock as Esc (tap) / Ctrl (hold).
-  # Requires the Karabiner DriverKit VirtualHIDDevice to be installed once:
-  # https://github.com/pqrs-org/Karabiner-DriverKit-VirtualHIDDevice/releases
-  launchd.daemons.kanata.serviceConfig = {
-    ProgramArguments = [
-      "${pkgs.kanata}/bin/kanata"
-      "-c"
-      "${./home/kanata.kbd}"
-    ];
-    KeepAlive = true;
-    RunAtLoad = true;
-    StandardOutPath = "/var/log/kanata.log";
-    StandardErrorPath = "/var/log/kanata.err.log";
   };
 
   # Sleep (unlike screen lock) kills running processes; keep it long.

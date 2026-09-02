@@ -58,7 +58,8 @@ module needs to learn a new name.
     home/terminal.nix          ghostty (cask on macOS, nixpkgs on Linux)
     home/neovim.nix            neovim, LSPs, plugins
     home/desktop.nix           Zen browser, Plasma settings
-    home/kanata.kbd            caps lock as Esc (tap) / Ctrl (hold), shared by both hosts
+    home/kanata.kbd            caps lock as Esc (tap) / Ctrl (hold) on NixOS
+    home/karabiner.nix         the same remap plus trackball buttons on macOS
     nvim/                      lua config, symlinked to ~/.config/nvim
     local/                     gitignored; see "Machine-local state"
 
