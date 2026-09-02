@@ -28,5 +28,16 @@
     vlc
     vscode
     obsidian
+  ] ++ lib.optionals stdenv.isDarwin [
+    # colima runs the Linux VM docker-client talks to; NixOS uses virtualisation.docker.
+    colima
+    docker-client
+    docker-compose
+    devcontainer
   ];
+
+  # nixpkgs docker-compose doesn't install its cli-plugin, so `docker compose` needs this link.
+  home.file.".docker/cli-plugins/docker-compose" = lib.mkIf pkgs.stdenv.isDarwin {
+    source = "${pkgs.docker-compose}/libexec/docker/cli-plugins/docker-compose";
+  };
 }
