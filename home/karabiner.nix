@@ -29,7 +29,7 @@ let
 in
 {
   # Read-only store symlink: edit here and rebuild; the Karabiner GUI cannot save.
-  xdg.configFile."karabiner/karabiner.json" = lib.mkIf pkgs.stdenv.isDarwin {
+  xdg.configFile."karabiner/karabiner.json" = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
     text = builtins.toJSON {
       global.show_in_menu_bar = true;
       profiles = [

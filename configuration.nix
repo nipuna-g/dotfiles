@@ -65,7 +65,7 @@
   users.users.${host.username} = {
     isNormalUser = true;
     description = "Nipuna G";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" ];
     shell = pkgs.zsh;
   };
 
@@ -79,6 +79,8 @@
     localNetworkGameTransfers.openFirewall = true;
   };
   programs.zsh.enable = true;
+
+  virtualisation.docker.enable = true;
 
   # System packages — keep this list for things that must be
   # system-wide. User tools belong in home.nix instead.

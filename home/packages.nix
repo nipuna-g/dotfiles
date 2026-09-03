@@ -1,5 +1,8 @@
 { pkgs, lib, ... }:
 
+let
+  inherit (pkgs.stdenv.hostPlatform) isLinux isDarwin;
+in
 {
   home.packages = with pkgs; [
     claude-code
@@ -19,25 +22,26 @@
     ripgrep
     fzf
     zoxide
-  ] ++ lib.optionals stdenv.isLinux [
+
+    devcontainer
+  ] ++ lib.optionals isLinux [
     # Wayland clipboard CLI; zsh binds vi-mode p/P through it (see shell.nix).
     wl-clipboard
     kdePackages.kate
     chromium
     deluge
     vlc
-    vscode
     obsidian
-  ] ++ lib.optionals stdenv.isDarwin [
+    zed-editor
+  ] ++ lib.optionals isDarwin [
     # colima runs the Linux VM docker-client talks to; NixOS uses virtualisation.docker.
     colima
     docker-client
     docker-compose
-    devcontainer
   ];
 
   # nixpkgs docker-compose doesn't install its cli-plugin, so `docker compose` needs this link.
-  home.file.".docker/cli-plugins/docker-compose" = lib.mkIf pkgs.stdenv.isDarwin {
+  home.file.".docker/cli-plugins/docker-compose" = lib.mkIf isDarwin {
     source = "${pkgs.docker-compose}/libexec/docker/cli-plugins/docker-compose";
   };
 }

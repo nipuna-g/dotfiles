@@ -30,9 +30,9 @@ in
 
 {
   # macOS gets Zen from the homebrew cask instead; the flake is Linux-only.
-  home.packages = lib.optionals pkgs.stdenv.isLinux [ zen ];
+  home.packages = lib.optionals pkgs.stdenv.hostPlatform.isLinux [ zen ];
 
-  programs.plasma = lib.mkIf pkgs.stdenv.isLinux {
+  programs.plasma = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
     enable = true;
 
     # Elecom Huge trackball: hold BTN_TASK (evdev button 279) and roll the ball
