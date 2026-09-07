@@ -1,18 +1,22 @@
-{ config, pkgs, host, ... }:
+{ config, pkgs, lib, host, ... }:
 
+let
+  # Everything below guarded on this is x86_64-only: proprietary blobs
+  # (Steam, ExpressVPN, the HP plugin) that don't ship an aarch64 build.
+  isx86_64 = pkgs.stdenv.hostPlatform.isx86_64;
+in
 {
-  imports = [
-    ./hardware-configuration.nix
-  ];
-
-  # Bootloader
+  # Bootloader: grub on the x86_64 desktop (BIOS/UEFI dual-boot with
+  # useOSProber); systemd-boot on the aarch64 VM, which UTM's edk2-aarch64
+  # UEFI firmware boots directly and which has no dual-boot to detect.
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.grub = {
+  boot.loader.grub = lib.mkIf isx86_64 {
     enable = true;
     device = "nodev";
     efiSupport = true;
     useOSProber = true;
   };
+  boot.loader.systemd-boot.enable = !isx86_64;
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # Networking
@@ -57,9 +61,9 @@
     pulse.enable = true;
   };
 
-  # Printing
+  # Printing. hplipWithPlugin's proprietary blob is x86_64-only.
   services.printing.enable = true;
-  services.printing.drivers = [ pkgs.hplipWithPlugin ];
+  services.printing.drivers = lib.optionals isx86_64 [ pkgs.hplipWithPlugin ];
 
   # User
   users.users.${host.username} = {
@@ -72,7 +76,8 @@
   # System-level programs
   programs.kdeconnect.enable = true;
   programs.nix-ld.enable = true;
-  programs.steam = {
+  # Steam ships x86_64-only Linux binaries.
+  programs.steam = lib.mkIf isx86_64 {
     enable = true;
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
@@ -93,8 +98,8 @@
   # Allow unfree packages (VS Code, Steam, etc.)
   nixpkgs.config.allowUnfree = true;
 
-  # ExpressVPN
-  services.expressvpn-qt.enable = true;
+  # ExpressVPN's Linux client is a proprietary x86_64-only binary.
+  services.expressvpn-qt.enable = isx86_64;
 
   # Kanata: caps lock as Esc (tap) / Ctrl (hold).
   hardware.uinput.enable = true;

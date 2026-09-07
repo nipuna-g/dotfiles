@@ -1,11 +1,18 @@
 # dotfiles
 
-One flake for two machines, sharing a single home-manager configuration:
+One flake for three machines, sharing a single home-manager configuration:
 
 | Host | Output | Rebuild with |
 | --- | --- | --- |
 | NixOS desktop (`x86_64-linux`, KDE Plasma 6) | `nixosConfigurations.nixos` | `sudo nixos-rebuild switch --flake ~/dotfiles#nixos` |
 | macOS laptop (`aarch64-darwin`, nix-darwin) | `darwinConfigurations.mac` | `sudo darwin-rebuild switch --flake path:$HOME/dotfiles#mac` |
+| NixOS UTM VM (`aarch64-linux`, KDE Plasma 6) | `nixosConfigurations.vm` | `sudo nixos-rebuild switch --flake ~/dotfiles#vm` |
+
+`nixosConfigurations.vm` shares `configuration.nix` with the desktop; the
+x86_64-only bits (Steam, ExpressVPN, the HP printer plugin) are guarded off by
+`pkgs.stdenv.hostPlatform.isx86_64` there, and the bootloader picks
+systemd-boot over grub on aarch64. Only the hardware config differs — see
+"UTM VM" below.
 
 The `rebuild` alias runs the right one for the host you are on, and `update`
 bumps `flake.lock` first. home-manager is a module of each host config rather
@@ -14,7 +21,7 @@ on its own.
 
 ## Per-host values
 
-The two hosts use different usernames. Rather than repeat one, `hosts.nix`
+Hosts can use different usernames. Rather than repeat one, `hosts.nix`
 holds one attrset per host:
 
     { hostname, system, username, homeDirectory }
@@ -46,10 +53,11 @@ module needs to learn a new name.
 
 ## Layout
 
-    flake.nix                  inputs and both host outputs
+    flake.nix                  inputs and all host outputs
     hosts.nix                  per-host values; the macOS entry lives in local/
-    configuration.nix          NixOS: boot, desktop, services
-    hardware-configuration.nix NixOS: generated hardware config
+    configuration.nix          NixOS: boot, desktop, services (shared by nixos and vm)
+    hardware-configuration.nix NixOS desktop: generated hardware config
+    hardware-configuration-vm.nix NixOS UTM VM: hardware config template, see "UTM VM"
     darwin-configuration.nix   macOS: nix-darwin, homebrew casks, launchd
     home.nix                   home-manager entry point, imports home/*
     home/packages.nix          user CLI tools (Linux-only extras appended)
@@ -134,9 +142,29 @@ on a block that names a key file — it stops ssh offering every agent identity 
 the wrong account — but must stay off a block that relies on an agent, where it
 would make ssh ignore that agent entirely.
 
+## UTM VM
+
+To run `nixosConfigurations.vm` (aarch64-linux, for a UTM VM on an Apple
+Silicon Mac):
+
+1. In UTM, create a VM (Virtualize, not Emulate) and boot it from the
+   [NixOS aarch64 minimal or graphical ISO](https://nixos.org/download).
+   Give it an EFI disk — UTM does this by default for aarch64 VMs.
+2. Partition/format the VM's disk per the
+   [NixOS manual](https://nixos.org/manual/nixos/stable/#sec-installation-manual-partitioning),
+   mount `/` and `/boot`, then run `nixos-generate-config --root /mnt`.
+   `hardware-configuration-vm.nix` as committed is a template, not a real
+   generated file — the VM's disk UUIDs don't exist until you create it — so
+   copy the generated `fileSystems`, `swapDevices`, and `boot.initrd` values
+   into `hardware-configuration-vm.nix` in this repo, replacing the
+   placeholders, and push.
+3. Install using the flake: `nixos-install --flake github:nipuna-g/dotfiles#vm`.
+4. Reboot into the installed system and rebuild normally:
+   `sudo nixos-rebuild switch --flake ~/dotfiles#vm`.
+
 ## Automation
 
 `.github/workflows/update-flake-lock.yml` bumps `flake.lock` every Saturday
-12:00 UTC and commits to the default branch. The NixOS host's
-`system.autoUpgrade` pulls that commit on Sundays at 04:00, so it only ever
-deploys a lock recorded in git. The macOS host is updated manually.
+12:00 UTC and commits to the default branch. Both NixOS hosts'
+`system.autoUpgrade` pulls that commit on Sundays at 04:00, so they only ever
+deploy a lock recorded in git. The macOS host is updated manually.

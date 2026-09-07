@@ -37,7 +37,7 @@
   let
     hosts = import ./hosts.nix;
 
-    # A function of host: the two hosts use different usernames.
+    # A function of host: hosts can use different usernames.
     hmSharedConfig = host: {
       nixpkgs.overlays = [ claude-code.overlays.default ];
       home-manager.useGlobalPkgs = true;
@@ -52,9 +52,25 @@
       specialArgs = { host = hosts.nixos; };
       modules = [
         ./configuration.nix
+        ./hardware-configuration.nix
         expressvpn-qt.nixosModules.default
         home-manager.nixosModules.home-manager
         (hmSharedConfig hosts.nixos)
+      ];
+    };
+
+    # aarch64-linux guest for a UTM VM on an Apple Silicon Mac. Shares
+    # configuration.nix with the desktop (x86_64-only bits like Steam and
+    # ExpressVPN are guarded there); only the hardware config differs.
+    nixosConfigurations.vm = nixpkgs.lib.nixosSystem {
+      inherit (hosts.vm) system;
+      specialArgs = { host = hosts.vm; };
+      modules = [
+        ./configuration.nix
+        ./hardware-configuration-vm.nix
+        expressvpn-qt.nixosModules.default
+        home-manager.nixosModules.home-manager
+        (hmSharedConfig hosts.vm)
       ];
     };
 
