@@ -26,6 +26,7 @@ in
       alias = {
         st     = "status";
         co     = "checkout";
+        cp     = "cherry-pick";
         cob    = "checkout -b";
         br     = "branch";
         lg     = "log --oneline --graph --decorate";
@@ -100,6 +101,19 @@ in
       zle -N _clip-put-before
       bindkey -M vicmd "p" _clip-put-after
       bindkey -M vicmd "P" _clip-put-before
+    '' + lib.optionalString isDarwin ''
+
+      # Without inotify propagation into the VM, watchers in containers (e.g.
+      # Vite) never see host-side edits over virtiofs and serve stale modules.
+      # colima persists the flag into the instance yaml, so it survives starts
+      # that bypass this wrapper.
+      colima() {
+        if [[ "$1" == start ]]; then
+          command colima start --mount-inotify "''${@:2}"
+        else
+          command colima "$@"
+        fi
+      }
     '';
   };
 
