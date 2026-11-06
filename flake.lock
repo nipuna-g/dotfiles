@@ -26,11 +26,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793924415,
-        "narHash": "sha256-K08zqFP5/8EGZRruzRET4raDhlCGh5NBSr2YpOcfjDE=",
+        "lastModified": 1793931932,
+        "narHash": "sha256-dX0P25iJPDRzFaNAjbsCM5JMzY72AhrjqAx2H5GaFRg=",
         "owner": "nipuna-g",
         "repo": "expressvpn-nix",
-        "rev": "71a414be8104ccce619062aaac1b5732a8c6d391",
+        "rev": "e36228869e66eb7d2561083b23fa299fb1ee0bca",
         "type": "github"
       },
       "original": {
